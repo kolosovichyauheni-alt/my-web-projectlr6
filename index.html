@@ -2,23 +2,15 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <!-- Требование: Метатег Viewport -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Личный дневник</title>
-    
-    <!-- Требование: Сброс стилей -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
-    
-    <!-- Подключение шрифтов -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Подключение наших стилей -->
-    <link rel="stylesheet" href="css/style.css">
+    <!-- Подключаем CSS из корня -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="app">
-        
-        <!-- ЭКРАН 1: ЛЕНТА -->
         <main id="screen-list" class="screen active">
             <header class="app-header">
                 <h1>Мои записи</h1>
@@ -44,14 +36,10 @@
             </section>
 
             <div class="date-header" id="list-date">Все записи</div>
-            <section id="notes-container" class="notes-list">
-                <!-- Записи добавляются JS -->
-            </section>
-
+            <section id="notes-container" class="notes-list"></section>
             <button class="fab" onclick="openNewNote()">+</button>
         </main>
 
-        <!-- ЭКРАН 2: ПРОСМОТР -->
         <section id="screen-view" class="screen">
             <header class="detail-header">
                 <button class="back-btn" onclick="showScreen('screen-list')">← Назад</button>
@@ -64,25 +52,21 @@
                 <div class="photo-preview" id="view-photo"></div>
                 <p class="detail-text" id="view-text"></p>
             </div>
-            
             <div class="detail-actions">
                 <button class="btn-primary" onclick="editNote()">Редактировать</button>
                 <button class="btn-danger" onclick="deleteNote()">Удалить</button>
             </div>
         </section>
 
-        <!-- ЭКРАН 3: РЕДАКТИРОВАНИЕ -->
         <section id="screen-new" class="screen">
             <header class="app-header">
                 <h1 id="form-title">Новая запись</h1>
                 <button class="close-btn" onclick="showScreen('screen-list')">✕</button>
             </header>
-            
             <div class="form-group">
                 <label>Заголовок</label>
                 <input type="text" id="input-title" placeholder="О чём запись?">
             </div>
-            
             <div class="form-group">
                 <label>Настроение</label>
                 <div class="emoji-row">
@@ -93,28 +77,23 @@
                     <button class="emoji-btn" onclick="selectEmoji(this)">😡</button>
                 </div>
             </div>
-
             <div class="form-group">
                 <label>Текст записи</label>
                 <textarea id="input-text" placeholder="Что произошло сегодня?"></textarea>
             </div>
-
             <div class="form-group">
                 <label>Фото</label>
                 <div class="photo-upload" onclick="document.getElementById('file-input').click()">+ Добавить фото</div>
                 <input type="file" id="file-input" accept="image/*" style="display: none;" onchange="previewImage(event)">
                 <div class="photo-preview" id="form-photo"></div>
             </div>
-
             <div class="form-group">
                 <label>Теги</label>
                 <div class="tags-container" id="form-tags-container"></div>
             </div>
-
-            <button class="btn-primary" onclick="saveNote()">Сохранить</button>
+            <button class="btn-primary" style="margin-top: 1rem;" onclick="saveNote()">Сохранить</button>
         </section>
 
-        <!-- ЭКРАН 4: КАЛЕНДАРЬ -->
         <section id="screen-calendar" class="screen">
             <header class="app-header">
                 <div class="header-left">
@@ -122,17 +101,14 @@
                     <h1>Календарь</h1>
                 </div>
             </header>
-            
             <div class="calendar-header">
                 <button onclick="changeMonth(-1)">‹</button>
-                <h2 id="calendar-month-year">Сентябрь 2025</h2>
+                <h2 id="calendar-month-year">Месяц</h2>
                 <button onclick="changeMonth(1)">›</button>
             </div>
-
             <div class="calendar-grid" id="calendar-grid"></div>
         </section>
 
-        <!-- ЭКРАН 5: ПОИСК -->
         <section id="screen-search" class="screen">
             <header class="app-header">
                 <div class="header-left">
@@ -140,14 +116,10 @@
                     <h1>Поиск</h1>
                 </div>
             </header>
-            <div class="search-bar">
-                <span>🔍</span>
-                <input type="text" placeholder="Глобальный поиск..." style="border:none; outline:none; width:100%;">
-            </div>
-            <div class="empty-state"><p>Введите запрос, чтобы найти записи.</p></div>
+            <div class="search-bar"><span>🔍</span><input type="text" placeholder="Глобальный поиск..."></div>
+            <div style="text-align: center; color: var(--text-gray); margin-top: 2rem;"><p>Введите запрос.</p></div>
         </section>
 
-        <!-- ЭКРАН 6: ПРОФИЛЬ -->
         <section id="screen-profile" class="screen">
             <header class="app-header">
                 <div class="header-left">
@@ -158,71 +130,50 @@
             <div class="profile-info">
                 <div class="profile-avatar">A</div>
                 <h2>Пользователь</h2>
-                <p class="profile-email">user@mail.com</p>
+                <p style="color: var(--text-gray); font-size: 0.875rem;">user@mail.com</p>
             </div>
             <div class="profile-stats">
-                <div class="stat-row">
-                    <span>Всего записей</span>
-                    <b id="profile-count">0</b>
-                </div>
-                <div class="stat-row">
-                    <span>Дата регистрации</span>
-                    <b>24.09.2025</b>
-                </div>
+                <div class="stat-row"><span>Всего записей</span><b id="profile-count">0</b></div>
+                <div class="stat-row"><span>Дата регистрации</span><b>24.09.2025</b></div>
             </div>
-            <button class="btn-outline logout-btn" onclick="showScreen('screen-auth')">Выйти из аккаунта</button>
+            <button class="btn-outline" style="margin-top: 2rem; color: var(--danger);" onclick="showScreen('screen-auth')">Выйти</button>
         </section>
 
-        <!-- ЭКРАН 7: АВТОРИЗАЦИЯ -->
         <section id="screen-auth" class="screen auth-screen">
-            <header class="app-header" style="position: absolute; top: 0; width: 100%;">
+            <header class="app-header" style="position: absolute; top: 0; width: 100%; padding: 1.25rem;">
                 <button class="back-btn" onclick="showScreen('screen-list')">← Назад</button>
             </header>
             <div class="auth-logo">📖</div>
             <h1 class="auth-title">Личный дневник</h1>
             <p class="auth-subtitle">Записывай мысли каждый день</p>
-            
-            <div class="auth-form">
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" placeholder="you@mail.com">
-                </div>
-                <div class="form-group">
-                    <label>Пароль</label>
-                    <input type="password" placeholder="••••••••">
-                </div>
+            <div class="auth-form" style="width: 100%;">
+                <div class="form-group"><label>Email</label><input type="email" placeholder="you@mail.com"></div>
+                <div class="form-group"><label>Пароль</label><input type="password" placeholder="••••••••"></div>
                 <a href="#" class="forgot-pass">Забыли пароль?</a>
-                
-                <button class="btn-primary" style="margin-top: 2rem;" onclick="switchTab('screen-list', document.querySelectorAll('.nav-item')[0])">Войти</button>
-                
+                <button class="btn-primary" style="margin-top: 1.5rem;" onclick="switchTab('screen-list', document.querySelectorAll('.nav-item')[0])">Войти</button>
                 <div class="divider">или</div>
                 <button class="btn-outline">Войти через Google</button>
-                <a href="#" class="register-link">Нет аккаунта? <span>Зарегистрироваться</span></a>
+                <a href="#" style="font-size: 0.875rem; color: var(--text-gray); margin-top: 1.25rem; text-decoration: none; display: block; text-align: center;">Нет аккаунта? <span style="color: var(--primary-color); font-weight: 600;">Зарегистрироваться</span></a>
             </div>
         </section>
 
-        <!-- НИЖНЕЕ МЕНЮ -->
         <nav class="bottom-nav" id="main-nav">
             <div class="nav-item active" onclick="switchTab('screen-list', this)">
-                <svg viewBox="0 0 24 24"><path d="M4 6h16v12H4z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 10h16"/></svg>
-                Лента
+                <svg viewBox="0 0 24 24"><path d="M4 6h16v12H4z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 10h16"/></svg>Лента
             </div>
             <div class="nav-item" onclick="switchTab('screen-calendar', this)">
-                <svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10z"/></svg>
-                Календарь
+                <svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10z"/></svg>Календарь
             </div>
             <div class="nav-item" onclick="switchTab('screen-search', this)">
-                <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-                Поиск
+                <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>Поиск
             </div>
             <div class="nav-item" onclick="switchTab('screen-profile', this)">
-                <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-                Профиль
+                <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>Профиль
             </div>
         </nav>
     </div>
 
-    <!-- Подключение JS -->
-    <script src="js/app.js"></script>
+    <!-- Подключаем JS из корня -->
+    <script src="app.js"></script>
 </body>
 </html>
