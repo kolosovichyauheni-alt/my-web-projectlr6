@@ -249,4 +249,78 @@ function saveNote() {
             date: timeStr,
             dateISO: todayISO,
             title: title,
-            emoji: selectedEmoji
+            emoji: selectedEmoji,
+            text: text.substring(0, 50) + (text.length > 50 ? '...' : ''),
+            tags: [...formTags],
+            fullText: text,
+            image: formImage
+        });
+    }
+    
+    dateFilter = null;
+    renderNotes();
+    switchTab('screen-list', document.querySelectorAll('.nav-item')[0]);
+}
+
+function openNote(id) {
+    const note = notes.find(n => n.id === id);
+    if(!note) return;
+    currentNoteId = id;
+    
+    document.getElementById('view-date').innerText = note.date;
+    document.getElementById('view-emoji').innerText = note.emoji;
+    document.getElementById('view-title').innerText = note.title;
+    document.getElementById('view-text').innerText = note.fullText;
+    document.getElementById('view-tags').innerHTML = note.tags.map(t => `<span class="tag">${t}</span>`).join('');
+    
+    const photoDiv = document.getElementById('view-photo');
+    if(note.image) {
+        photoDiv.style.display = 'flex';
+        photoDiv.innerHTML = `<img src="${note.image}" alt="Фото">`;
+    } else {
+        photoDiv.style.display = 'none';
+        photoDiv.innerHTML = '';
+    }
+    
+    showScreen('screen-view');
+}
+
+function deleteNote() {
+    if(confirm("Вы уверены, что хотите удалить запись?")) {
+        notes = notes.filter(n => n.id !== currentNoteId);
+        renderNotes();
+        showScreen('screen-list');
+    }
+}
+
+function editNote() {
+    const note = notes.find(n => n.id === currentNoteId);
+    if(!note) return;
+    
+    document.getElementById('form-title').innerText = "Редактирование";
+    document.getElementById('input-title').value = note.title;
+    document.getElementById('input-text').value = note.fullText;
+    
+    document.querySelectorAll('.emoji-btn').forEach(btn => {
+        if(btn.innerText === note.emoji) btn.classList.add('selected');
+        else btn.classList.remove('selected');
+    });
+    selectedEmoji = note.emoji;
+    
+    formTags = [...note.tags];
+    renderFormTags();
+    
+    formImage = note.image;
+    const preview = document.getElementById('form-photo');
+    if(formImage) {
+        preview.style.display = 'flex';
+        preview.innerHTML = `<img src="${formImage}" alt="Фото">`;
+    } else {
+        preview.style.display = 'none';
+        preview.innerHTML = '';
+    }
+
+    showScreen('screen-new');
+}
+
+renderNotes();
