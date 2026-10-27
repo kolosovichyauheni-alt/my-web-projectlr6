@@ -10,12 +10,11 @@
         body { background-color: #F8F9FA; color: #1A1A1A; display: flex; justify-content: center; }
         #app { width: 100%; max-width: 400px; min-height: 100vh; background-color: #FCFDFE; position: relative; overflow-x: hidden; }
         
-        /* Экраны */
         .screen { display: none; padding: 20px; min-height: 100vh; flex-direction: column; padding-bottom: 80px; }
         .screen.active { display: flex; }
         
-        /* Общие стили */
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-top: 20px; }
+        .header-left { display: flex; align-items: center; gap: 10px; }
         .header h1 { font-size: 24px; font-weight: 700; }
         .close-btn, .back-btn, .dots-btn { background: none; border: none; font-size: 24px; cursor: pointer; color: #333; padding: 5px; }
         
@@ -23,29 +22,24 @@
         .btn-outline { background: white; color: #333; border: 1px solid #E0E0E0; padding: 15px; border-radius: 12px; font-size: 16px; font-weight: 600; width: 100%; cursor: pointer; margin-top: 10px; }
         .btn-danger { background: white; color: #FF4757; border: 1px solid #FF4757; padding: 15px; border-radius: 12px; font-size: 16px; font-weight: 600; width: 100%; cursor: pointer; margin-top: 10px; }
 
-        /* Ввод данных */
         label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; margin-top: 15px; }
         input[type="text"], input[type="email"], input[type="password"], textarea { width: 100%; padding: 15px; border: 1px solid #E0E0E0; border-radius: 12px; font-size: 15px; background: #FFF; outline: none; }
         textarea { height: 120px; resize: none; }
         input:focus, textarea:focus { border-color: #6C5CE7; }
 
-        /* Эмодзи */
         .emoji-row { display: flex; gap: 10px; margin-top: 5px; }
         .emoji-btn { font-size: 24px; background: #FFF; border: 2px solid transparent; border-radius: 50%; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .emoji-btn.selected { border-color: #6C5CE7; background: #F0EEFF; }
 
-        /* Теги */
         .tags-container { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 5px; }
         .tag { background: #F0EEFF; color: #6C5CE7; padding: 6px 12px; border-radius: 20px; font-size: 13px; display: flex; align-items: center; gap: 5px; }
         .tag button { background: none; border: none; color: #6C5CE7; cursor: pointer; font-size: 16px; line-height: 1; padding: 0; }
         .add-tag-btn { background: #F0EEFF; color: #6C5CE7; border: none; border-radius: 50%; width: 30px; height: 30px; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
-        /* Фото */
         .photo-upload { border: 2px dashed #6C5CE7; border-radius: 12px; padding: 20px; text-align: center; color: #6C5CE7; margin-top: 10px; cursor: pointer; font-size: 14px; }
-        .photo-preview { width: 100%; height: 180px; background: #EAEAEA; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 40px; margin-top: 10px; }
-        .photo-preview img { width: 100%; height: 100%; object-fit: cover; border-radius: 12px; }
+        .photo-preview { width: 100%; height: 180px; background: #EAEAEA; border-radius: 12px; display: none; align-items: center; justify-content: center; margin-top: 10px; overflow: hidden; }
+        .photo-preview img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* Список записей */
         .search-bar { background: white; border: 1px solid #E0E0E0; border-radius: 12px; padding: 12px 15px; display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
         .search-bar input { border: none; padding: 0; }
         .filters { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 15px; }
@@ -59,14 +53,12 @@
         .note-preview-text { font-size: 14px; color: #555; line-height: 1.4; margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .note-emoji { position: absolute; right: 15px; top: 15px; font-size: 24px; }
 
-        /* Нижнее меню */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; max-width: 400px; background: white; display: flex; justify-content: space-around; padding: 15px 10px; border-top: 1px solid #EAEAEA; z-index: 10; }
         .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 10px; color: #888; cursor: pointer; gap: 4px; }
         .nav-item.active { color: #6C5CE7; }
         .nav-item svg { width: 24px; height: 24px; fill: currentColor; }
         .fab { position: fixed; bottom: 80px; right: calc(50% - 180px); width: 56px; height: 56px; background: #6C5CE7; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 30px; border: none; box-shadow: 0 4px 15px rgba(108,92,231,0.4); cursor: pointer; z-index: 10; }
 
-        /* Детальный экран */
         .detail-header { display: flex; justify-content: space-between; margin-bottom: 20px; padding-top: 20px; }
         .detail-date { color: #888; font-size: 13px; margin-bottom: 15px; }
         .detail-emoji { font-size: 40px; margin-bottom: 10px; }
@@ -74,6 +66,15 @@
         .detail-text { font-size: 16px; line-height: 1.6; color: #333; margin-bottom: 20px; white-space: pre-wrap; }
         .detail-actions { display: flex; gap: 10px; margin-top: auto; padding-bottom: 20px; }
         .detail-actions button { margin-top: 0; }
+
+        /* Календарь */
+        .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .calendar-header button { background: #F0EEFF; color: #6C5CE7; border: none; width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; }
+        .calendar-day-name { font-size: 12px; color: #888; font-weight: 600; margin-bottom: 10px; }
+        .calendar-day { height: 40px; display: flex; justify-content: center; align-items: center; border-radius: 50%; font-size: 14px; cursor: default; }
+        .calendar-day.has-note { background: #6C5CE7; color: white; font-weight: bold; cursor: pointer; }
+        .calendar-day.empty { color: #ccc; }
 
         /* Авторизация */
         .auth-screen { justify-content: center; align-items: center; text-align: center; padding-bottom: 20px; }
@@ -88,10 +89,6 @@
         .divider::after { margin-left: 10px; }
         .register-link { font-size: 14px; color: #888; margin-top: 20px; text-decoration: none; text-align: center; display: block; }
         .register-link span { color: #6C5CE7; font-weight: 600; }
-
-        /* Вкладки (Полноценные) */
-        .empty-tab { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 60vh; color: #888; text-align: center; }
-        .empty-tab h2 { color: #333; margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -101,7 +98,7 @@
     <div id="screen-list" class="screen active">
         <div class="header">
             <h1>Мои записи</h1>
-            <div style="width: 36px; height: 36px; background: #6C5CE7; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; font-weight: bold; cursor: pointer;" onclick="showScreen('screen-profile')">A</div>
+            <div style="width: 36px; height: 36px; background: #6C5CE7; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; font-weight: bold; cursor: pointer;" onclick="switchTab('screen-profile', document.querySelectorAll('.nav-item')[3])">A</div>
         </div>
         
         <div class="search-bar">
@@ -118,23 +115,22 @@
             <button class="filter-btn" onclick="setFilter('😡', this)">😡</button>
         </div>
 
-        <div class="date-header" id="list-date">Сегодня, 24 сентября</div>
+        <div class="date-header" id="list-date">Все записи</div>
         <div id="notes-container"></div>
 
         <button class="fab" onclick="openNewNote()">+</button>
     </div>
 
-    <!-- ЭКРАН 2: ПРОСМОТР ЗАПИСИ -->
+    <!-- ЭКРАН 2: ПРОСМОТР -->
     <div id="screen-view" class="screen">
         <div class="detail-header">
-            <button class="back-btn" onclick="showScreen('screen-list')">←</button>
-            <button class="dots-btn">⋮</button>
+            <button class="back-btn" onclick="showScreen('screen-list')">← Назад</button>
         </div>
         <div class="detail-date" id="view-date"></div>
         <div class="detail-emoji" id="view-emoji"></div>
         <h2 class="detail-title" id="view-title"></h2>
         <div class="tags-container" id="view-tags" style="margin-bottom: 15px;"></div>
-        <div class="photo-preview" id="view-photo" style="display: none;"></div>
+        <div class="photo-preview" id="view-photo"></div>
         <p class="detail-text" id="view-text"></p>
         
         <div class="detail-actions">
@@ -143,7 +139,7 @@
         </div>
     </div>
 
-    <!-- ЭКРАН 3: НОВАЯ / РЕДАКТИРОВАНИЕ -->
+    <!-- ЭКРАН 3: РЕДАКТИРОВАНИЕ -->
     <div id="screen-new" class="screen">
         <div class="header">
             <h1 id="form-title">Новая запись</h1>
@@ -166,22 +162,84 @@
         <textarea id="input-text" placeholder="Что произошло сегодня?"></textarea>
 
         <label>Фото</label>
-        <div class="photo-upload" onclick="document.getElementById('file-input').click()">
-            + Добавить фото
-        </div>
+        <div class="photo-upload" onclick="document.getElementById('file-input').click()">+ Добавить фото</div>
         <input type="file" id="file-input" accept="image/*" style="display: none;" onchange="previewImage(event)">
-        <div class="photo-preview" id="form-photo" style="display: none;"></div>
+        <div class="photo-preview" id="form-photo"></div>
 
         <label>Теги</label>
-        <div class="tags-container" id="form-tags-container">
-            <button class="add-tag-btn" onclick="addTag()">+</button>
-        </div>
+        <div class="tags-container" id="form-tags-container"></div>
 
         <button class="btn-primary" style="margin-top: 30px;" onclick="saveNote()">Сохранить</button>
     </div>
 
-    <!-- ЭКРАН 4: АВТОРИЗАЦИЯ -->
+    <!-- ЭКРАН 4: КАЛЕНДАРЬ -->
+    <div id="screen-calendar" class="screen">
+        <div class="header">
+            <div class="header-left">
+                <button class="back-btn" onclick="switchTab('screen-list', document.querySelectorAll('.nav-item')[0])">←</button>
+                <h1>Календарь</h1>
+            </div>
+        </div>
+        
+        <div class="calendar-header">
+            <button onclick="changeMonth(-1)">‹</button>
+            <h2 id="calendar-month-year" style="font-size: 18px;">Сентябрь 2025</h2>
+            <button onclick="changeMonth(1)">›</button>
+        </div>
+
+        <div class="calendar-grid" id="calendar-grid">
+            <!-- Сетка генерируется в JS -->
+        </div>
+    </div>
+
+    <!-- ЭКРАН 5: ПОИСК -->
+    <div id="screen-search" class="screen">
+        <div class="header">
+            <div class="header-left">
+                <button class="back-btn" onclick="switchTab('screen-list', document.querySelectorAll('.nav-item')[0])">←</button>
+                <h1>Поиск</h1>
+            </div>
+        </div>
+        <div class="search-bar">
+            <span>🔍</span>
+            <input type="text" placeholder="Глобальный поиск по тегам..." style="border:none; outline:none; width:100%;">
+        </div>
+        <div style="text-align: center; color: #888; margin-top: 40px;">
+            <p>Введите запрос, чтобы найти записи.</p>
+        </div>
+    </div>
+
+    <!-- ЭКРАН 6: ПРОФИЛЬ -->
+    <div id="screen-profile" class="screen">
+        <div class="header">
+            <div class="header-left">
+                <button class="back-btn" onclick="switchTab('screen-list', document.querySelectorAll('.nav-item')[0])">←</button>
+                <h1>Профиль</h1>
+            </div>
+        </div>
+        <div style="text-align: center; margin-top: 20px;">
+            <div style="width: 80px; height: 80px; background: #F0EEFF; color: #6C5CE7; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 30px; font-weight: bold; margin: 0 auto 15px;">A</div>
+            <h2>Пользователь</h2>
+            <p style="color: #888; font-size: 14px; margin-top: 5px;">user@mail.com</p>
+        </div>
+        <div style="margin-top: 30px; background: white; border-radius: 12px; border: 1px solid #EAEAEA; padding: 15px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid #F0F0F0; padding-bottom: 10px;">
+                <span>Всего записей</span>
+                <b id="profile-count">0</b>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+                <span>Дата регистрации</span>
+                <b>24.09.2025</b>
+            </div>
+        </div>
+        <button class="btn-outline" style="margin-top: 30px; color: #FF4757;" onclick="showScreen('screen-auth')">Выйти из аккаунта</button>
+    </div>
+
+    <!-- ЭКРАН 7: АВТОРИЗАЦИЯ -->
     <div id="screen-auth" class="screen auth-screen">
+        <div class="header" style="width: 100%; position: absolute; top: 0; left: 0; padding: 20px;">
+            <button class="back-btn" onclick="showScreen('screen-list')">← Назад</button>
+        </div>
         <div class="auth-logo">📖</div>
         <h1 class="auth-title">Личный дневник</h1>
         <p class="auth-subtitle">Записывай мысли каждый день</p>
@@ -194,64 +252,12 @@
             <input type="password" placeholder="••••••••">
             <a href="#" class="forgot-pass">Забыли пароль?</a>
             
-            <button class="btn-primary" style="margin-top: 20px;" onclick="showScreen('screen-list')">Войти</button>
+            <button class="btn-primary" style="margin-top: 20px;" onclick="switchTab('screen-list', document.querySelectorAll('.nav-item')[0])">Войти</button>
             
             <div class="divider">или</div>
-            
             <button class="btn-outline">Войти через Google</button>
-            
             <a href="#" class="register-link">Нет аккаунта? <span>Зарегистрироваться</span></a>
         </div>
-    </div>
-
-    <!-- ЭКРАН 5: КАЛЕНДАРЬ -->
-    <div id="screen-calendar" class="screen">
-        <div class="header"><h1>Календарь</h1></div>
-        <div class="empty-tab">
-            <h2>📅 Сентябрь 2025</h2>
-            <p style="margin-top: 10px;">У вас <b>2</b> записи в этом месяце.</p>
-            <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin-top: 30px; width: 100%; max-width: 300px;">
-                <!-- Просто визуальная имитация календаря -->
-                <div style="color: #ccc;">Пн</div><div style="color: #ccc;">Вт</div><div style="color: #ccc;">Ср</div><div style="color: #ccc;">Чт</div><div style="color: #ccc;">Пт</div><div style="color: #ccc;">Сб</div><div style="color: #ccc;">Вс</div>
-                <div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div>
-                <div>8</div><div>9</div><div>10</div><div>11</div><div>12</div><div>13</div><div>14</div>
-                <div>15</div><div>16</div><div>17</div><div>18</div><div>19</div><div>20</div><div>21</div>
-                <div>22</div><div>23</div><div style="background: #6C5CE7; color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; justify-content: center; align-items: center; margin: 0 auto;">24</div><div>25</div><div>26</div><div>27</div><div>28</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ЭКРАН 6: ПОИСК -->
-    <div id="screen-search" class="screen">
-        <div class="header"><h1>Поиск</h1></div>
-        <div class="search-bar">
-            <span>🔍</span>
-            <input type="text" placeholder="Глобальный поиск по тегам..." style="border:none; outline:none; width:100%;">
-        </div>
-        <div class="empty-tab" style="height: 40vh;">
-            <p>Введите запрос, чтобы найти записи.</p>
-        </div>
-    </div>
-
-    <!-- ЭКРАН 7: ПРОФИЛЬ -->
-    <div id="screen-profile" class="screen">
-        <div class="header"><h1>Профиль</h1></div>
-        <div style="text-align: center; margin-top: 20px;">
-            <div style="width: 80px; height: 80px; background: #F0EEFF; color: #6C5CE7; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 30px; font-weight: bold; margin: 0 auto 15px;">A</div>
-            <h2>Пользователь</h2>
-            <p style="color: #888; font-size: 14px; margin-top: 5px;">user@mail.com</p>
-        </div>
-        <div style="margin-top: 30px; background: white; border-radius: 12px; border: 1px solid #EAEAEA; padding: 15px;">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid #F0F0F0; padding-bottom: 10px;">
-                <span>Всего записей</span>
-                <b id="profile-count">2</b>
-            </div>
-            <div style="display: flex; justify-content: space-between;">
-                <span>Дата регистрации</span>
-                <b>24.09.2025</b>
-            </div>
-        </div>
-        <button class="btn-outline" style="margin-top: 30px; color: #FF4757;" onclick="showScreen('screen-auth')">Выйти из аккаунта</button>
     </div>
 
     <!-- НИЖНЕЕ МЕНЮ -->
@@ -276,11 +282,12 @@
 </div>
 
 <script>
-    // Глобальные переменные
+    // Начальные данные (добавил даты в ISO формате для календаря)
     let notes = [
         {
             id: 1,
             date: "Сегодня, 14:30",
+            dateISO: new Date().toISOString().split('T')[0],
             title: "Хороший день",
             emoji: "😁",
             text: "Сегодня закончил проект, погулял в парке и встретил старого друга...",
@@ -290,7 +297,8 @@
         },
         {
             id: 2,
-            date: "Сегодня, 09:15",
+            date: "Вчера, 09:15",
+            dateISO: new Date(Date.now() - 86400000).toISOString().split('T')[0],
             title: "Утро понедельника",
             emoji: "😊",
             text: "Не выспался, но кофе спас ситуацию. Планов на день много...",
@@ -303,8 +311,12 @@
     let currentNoteId = null;
     let selectedEmoji = "😁";
     let currentFilter = "all";
+    let dateFilter = null; // Фильтр по клику на календарь
     let formTags = [];
     let formImage = null;
+    
+    // Переменные календаря
+    let currentDate = new Date();
 
     // --- НАВИГАЦИЯ ---
     function showScreen(screenId) {
@@ -314,7 +326,6 @@
         const nav = document.getElementById('main-nav');
         const fab = document.querySelector('.fab');
         
-        // Скрываем меню и кнопку "+" на внутренних экранах
         if(['screen-list', 'screen-calendar', 'screen-search', 'screen-profile'].includes(screenId)) {
             nav.style.display = 'flex';
             if(fab) fab.style.display = (screenId === 'screen-list') ? 'flex' : 'none';
@@ -323,15 +334,17 @@
             if(fab) fab.style.display = 'none';
         }
 
-        // Если перешли в профиль - обновляем счетчик
         if(screenId === 'screen-profile') {
             document.getElementById('profile-count').innerText = notes.length;
+        }
+        if(screenId === 'screen-calendar') {
+            renderCalendar();
         }
     }
 
     function switchTab(screenId, element) {
         document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-        element.classList.add('active');
+        if(element) element.classList.add('active');
         showScreen(screenId);
     }
 
@@ -340,6 +353,7 @@
         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         currentFilter = emoji;
+        dateFilter = null; // Сбрасываем фильтр календаря
         renderNotes();
     }
 
@@ -348,15 +362,15 @@
         const searchQuery = document.getElementById('search-input').value.toLowerCase();
         container.innerHTML = '';
         
-        // Фильтрация
         const filtered = notes.filter(n => {
             const matchEmoji = currentFilter === 'all' || n.emoji === currentFilter;
             const matchSearch = n.title.toLowerCase().includes(searchQuery) || n.fullText.toLowerCase().includes(searchQuery) || n.tags.some(t => t.toLowerCase().includes(searchQuery));
-            return matchEmoji && matchSearch;
+            const matchDate = !dateFilter || n.dateISO === dateFilter;
+            return matchEmoji && matchSearch && matchDate;
         });
 
-        // Обновляем заголовок даты
-        document.getElementById('list-date').innerText = filtered.length > 0 ? "Найденные записи" : "Записей не найдено";
+        document.getElementById('list-date').innerText = dateFilter ? `Записи за ${dateFilter}` : "Все записи";
+        if(filtered.length === 0) document.getElementById('list-date').innerText = "Записей не найдено";
 
         filtered.forEach(note => {
             const card = document.createElement('div');
@@ -367,13 +381,72 @@
                 <div class="note-time">${note.date}</div>
                 <div class="note-title">${note.title}</div>
                 <div class="note-preview-text">${note.text}</div>
-                <div class="tags-container">
-                    ${note.tags.map(t => `<span class="tag">${t}</span>`).join('')}
-                </div>
+                <div class="tags-container">${note.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
                 <div class="note-emoji">${note.emoji}</div>
             `;
             container.appendChild(card);
         });
+    }
+
+    // --- КАЛЕНДАРЬ ---
+    function renderCalendar() {
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+        
+        const monthNames = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
+        document.getElementById('calendar-month-year').innerText = `${monthNames[month]} ${year}`;
+        
+        const grid = document.getElementById('calendar-grid');
+        grid.innerHTML = '';
+        
+        const days = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+        days.forEach(d => {
+            const el = document.createElement('div');
+            el.className = 'calendar-day-name';
+            el.innerText = d;
+            grid.appendChild(el);
+        });
+
+        let firstDay = new Date(year, month, 1).getDay();
+        if (firstDay === 0) firstDay = 7; // Воскресенье - 7-й день
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        // Пустые ячейки
+        for (let i = 1; i < firstDay; i++) {
+            const el = document.createElement('div');
+            el.className = 'calendar-day empty';
+            grid.appendChild(el);
+        }
+
+        // Дни
+        for (let i = 1; i <= daysInMonth; i++) {
+            const el = document.createElement('div');
+            el.className = 'calendar-day';
+            el.innerText = i;
+            
+            // Форматируем дату как YYYY-MM-DD
+            const dStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+            
+            // Проверяем, есть ли записи в этот день
+            const hasNote = notes.some(n => n.dateISO === dStr);
+            if (hasNote) {
+                el.classList.add('has-note');
+                el.onclick = () => {
+                    dateFilter = dStr;
+                    currentFilter = "all";
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    document.querySelector('.filter-btn').classList.add('active');
+                    renderNotes();
+                    switchTab('screen-list', document.querySelectorAll('.nav-item')[0]);
+                };
+            }
+            grid.appendChild(el);
+        }
+    }
+
+    function changeMonth(offset) {
+        currentDate.setMonth(currentDate.getMonth() + offset);
+        renderCalendar();
     }
 
     // --- СОЗДАНИЕ И РЕДАКТИРОВАНИЕ ---
@@ -452,8 +525,9 @@
         const title = document.getElementById('input-title').value || 'Без названия';
         const text = document.getElementById('input-text').value || 'Пустая запись...';
         
+        const todayISO = new Date().toISOString().split('T')[0];
+        
         if(currentNoteId) {
-            // Обновление существующей
             const note = notes.find(n => n.id === currentNoteId);
             note.title = title;
             note.fullText = text;
@@ -462,13 +536,13 @@
             note.tags = [...formTags];
             note.image = formImage;
         } else {
-            // Создание новой
             const now = new Date();
             const timeStr = `Сегодня, ${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
             
             notes.unshift({
                 id: Date.now(),
                 date: timeStr,
+                dateISO: todayISO,
                 title: title,
                 emoji: selectedEmoji,
                 text: text.substring(0, 50) + (text.length > 50 ? '...' : ''),
@@ -478,12 +552,12 @@
             });
         }
         
+        dateFilter = null;
         renderNotes();
-        showScreen('screen-list');
-        switchTab('screen-list', document.querySelector('.nav-item'));
+        switchTab('screen-list', document.querySelectorAll('.nav-item')[0]);
     }
 
-    // --- ПРОСМОТР ЗАПИСИ ---
+    // --- ПРОСМОТР ---
     function openNote(id) {
         const note = notes.find(n => n.id === id);
         if(!note) return;
@@ -493,7 +567,6 @@
         document.getElementById('view-emoji').innerText = note.emoji;
         document.getElementById('view-title').innerText = note.title;
         document.getElementById('view-text').innerText = note.fullText;
-        
         document.getElementById('view-tags').innerHTML = note.tags.map(t => `<span class="tag">${t}</span>`).join('');
         
         const photoDiv = document.getElementById('view-photo');
@@ -546,7 +619,7 @@
         showScreen('screen-new');
     }
 
-    // Инициализация при загрузке
+    // Инициализация
     renderNotes();
 </script>
 </body>
