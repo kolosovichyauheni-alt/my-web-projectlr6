@@ -2,625 +2,227 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <!-- Требование: Метатег Viewport -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Личный дневник</title>
+    
+    <!-- Требование: Сброс стилей -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    
+    <!-- Подключение шрифтов -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: #F8F9FA; color: #1A1A1A; display: flex; justify-content: center; }
-        #app { width: 100%; max-width: 400px; min-height: 100vh; background-color: #FCFDFE; position: relative; overflow-x: hidden; }
-        
-        .screen { display: none; padding: 20px; min-height: 100vh; flex-direction: column; padding-bottom: 80px; }
-        .screen.active { display: flex; }
-        
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-top: 20px; }
-        .header-left { display: flex; align-items: center; gap: 10px; }
-        .header h1 { font-size: 24px; font-weight: 700; }
-        .close-btn, .back-btn, .dots-btn { background: none; border: none; font-size: 24px; cursor: pointer; color: #333; padding: 5px; }
-        
-        .btn-primary { background: #6C5CE7; color: white; border: none; padding: 15px; border-radius: 12px; font-size: 16px; font-weight: 600; width: 100%; cursor: pointer; margin-top: 10px; }
-        .btn-outline { background: white; color: #333; border: 1px solid #E0E0E0; padding: 15px; border-radius: 12px; font-size: 16px; font-weight: 600; width: 100%; cursor: pointer; margin-top: 10px; }
-        .btn-danger { background: white; color: #FF4757; border: 1px solid #FF4757; padding: 15px; border-radius: 12px; font-size: 16px; font-weight: 600; width: 100%; cursor: pointer; margin-top: 10px; }
-
-        label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; margin-top: 15px; }
-        input[type="text"], input[type="email"], input[type="password"], textarea { width: 100%; padding: 15px; border: 1px solid #E0E0E0; border-radius: 12px; font-size: 15px; background: #FFF; outline: none; }
-        textarea { height: 120px; resize: none; }
-        input:focus, textarea:focus { border-color: #6C5CE7; }
-
-        .emoji-row { display: flex; gap: 10px; margin-top: 5px; }
-        .emoji-btn { font-size: 24px; background: #FFF; border: 2px solid transparent; border-radius: 50%; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .emoji-btn.selected { border-color: #6C5CE7; background: #F0EEFF; }
-
-        .tags-container { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 5px; }
-        .tag { background: #F0EEFF; color: #6C5CE7; padding: 6px 12px; border-radius: 20px; font-size: 13px; display: flex; align-items: center; gap: 5px; }
-        .tag button { background: none; border: none; color: #6C5CE7; cursor: pointer; font-size: 16px; line-height: 1; padding: 0; }
-        .add-tag-btn { background: #F0EEFF; color: #6C5CE7; border: none; border-radius: 50%; width: 30px; height: 30px; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-
-        .photo-upload { border: 2px dashed #6C5CE7; border-radius: 12px; padding: 20px; text-align: center; color: #6C5CE7; margin-top: 10px; cursor: pointer; font-size: 14px; }
-        .photo-preview { width: 100%; height: 180px; background: #EAEAEA; border-radius: 12px; display: none; align-items: center; justify-content: center; margin-top: 10px; overflow: hidden; }
-        .photo-preview img { width: 100%; height: 100%; object-fit: cover; }
-
-        .search-bar { background: white; border: 1px solid #E0E0E0; border-radius: 12px; padding: 12px 15px; display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
-        .search-bar input { border: none; padding: 0; }
-        .filters { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 15px; }
-        .filter-btn { padding: 8px 16px; border-radius: 20px; border: none; background: #F0EEFF; color: #333; font-size: 14px; cursor: pointer; white-space: nowrap; }
-        .filter-btn.active { background: #6C5CE7; color: white; }
-
-        .date-header { font-size: 13px; color: #888; margin-bottom: 10px; margin-top: 10px; }
-        .note-card { background: white; border: 1px solid #EAEAEA; border-radius: 16px; padding: 15px; margin-bottom: 15px; cursor: pointer; position: relative; }
-        .note-time { font-size: 12px; color: #888; margin-bottom: 5px; }
-        .note-title { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
-        .note-preview-text { font-size: 14px; color: #555; line-height: 1.4; margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .note-emoji { position: absolute; right: 15px; top: 15px; font-size: 24px; }
-
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; max-width: 400px; background: white; display: flex; justify-content: space-around; padding: 15px 10px; border-top: 1px solid #EAEAEA; z-index: 10; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 10px; color: #888; cursor: pointer; gap: 4px; }
-        .nav-item.active { color: #6C5CE7; }
-        .nav-item svg { width: 24px; height: 24px; fill: currentColor; }
-        .fab { position: fixed; bottom: 80px; right: calc(50% - 180px); width: 56px; height: 56px; background: #6C5CE7; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 30px; border: none; box-shadow: 0 4px 15px rgba(108,92,231,0.4); cursor: pointer; z-index: 10; }
-
-        .detail-header { display: flex; justify-content: space-between; margin-bottom: 20px; padding-top: 20px; }
-        .detail-date { color: #888; font-size: 13px; margin-bottom: 15px; }
-        .detail-emoji { font-size: 40px; margin-bottom: 10px; }
-        .detail-title { font-size: 22px; font-weight: 700; margin-bottom: 15px; }
-        .detail-text { font-size: 16px; line-height: 1.6; color: #333; margin-bottom: 20px; white-space: pre-wrap; }
-        .detail-actions { display: flex; gap: 10px; margin-top: auto; padding-bottom: 20px; }
-        .detail-actions button { margin-top: 0; }
-
-        /* Календарь */
-        .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .calendar-header button { background: #F0EEFF; color: #6C5CE7; border: none; width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; }
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; }
-        .calendar-day-name { font-size: 12px; color: #888; font-weight: 600; margin-bottom: 10px; }
-        .calendar-day { height: 40px; display: flex; justify-content: center; align-items: center; border-radius: 50%; font-size: 14px; cursor: default; }
-        .calendar-day.has-note { background: #6C5CE7; color: white; font-weight: bold; cursor: pointer; }
-        .calendar-day.empty { color: #ccc; }
-
-        /* Авторизация */
-        .auth-screen { justify-content: center; align-items: center; text-align: center; padding-bottom: 20px; }
-        .auth-logo { width: 80px; height: 80px; background: #6C5CE7; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 35px; margin-bottom: 20px; color: white; }
-        .auth-title { font-size: 24px; font-weight: 700; margin-bottom: 5px; }
-        .auth-subtitle { color: #888; font-size: 14px; margin-bottom: 30px; }
-        .auth-form { width: 100%; text-align: left; }
-        .forgot-pass { text-align: right; width: 100%; display: block; font-size: 13px; color: #6C5CE7; text-decoration: none; margin-top: 8px; }
-        .divider { display: flex; align-items: center; text-align: center; color: #888; font-size: 13px; margin: 20px 0; width: 100%; }
-        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid #E0E0E0; }
-        .divider::before { margin-right: 10px; }
-        .divider::after { margin-left: 10px; }
-        .register-link { font-size: 14px; color: #888; margin-top: 20px; text-decoration: none; text-align: center; display: block; }
-        .register-link span { color: #6C5CE7; font-weight: 600; }
-    </style>
+    
+    <!-- Подключение наших стилей -->
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-
-<div id="app">
-    <!-- ЭКРАН 1: ЛЕНТА -->
-    <div id="screen-list" class="screen active">
-        <div class="header">
-            <h1>Мои записи</h1>
-            <div style="width: 36px; height: 36px; background: #6C5CE7; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; font-weight: bold; cursor: pointer;" onclick="switchTab('screen-profile', document.querySelectorAll('.nav-item')[3])">A</div>
-        </div>
+    <div id="app">
         
-        <div class="search-bar">
-            <span>🔍</span>
-            <input type="text" id="search-input" placeholder="Поиск записей..." oninput="renderNotes()">
-        </div>
+        <!-- ЭКРАН 1: ЛЕНТА -->
+        <main id="screen-list" class="screen active">
+            <header class="app-header">
+                <h1>Мои записи</h1>
+                <button class="avatar-btn" onclick="switchTab('screen-profile', document.querySelectorAll('.nav-item')[3])">A</button>
+            </header>
+            
+            <section class="search-section">
+                <div class="search-bar">
+                    <span>🔍</span>
+                    <input type="text" id="search-input" placeholder="Поиск записей..." oninput="renderNotes()">
+                </div>
+            </section>
 
-        <div class="filters">
-            <button class="filter-btn active" onclick="setFilter('all', this)">Все</button>
-            <button class="filter-btn" onclick="setFilter('😁', this)">😁</button>
-            <button class="filter-btn" onclick="setFilter('😊', this)">😊</button>
-            <button class="filter-btn" onclick="setFilter('😐', this)">😐</button>
-            <button class="filter-btn" onclick="setFilter('😢', this)">😢</button>
-            <button class="filter-btn" onclick="setFilter('😡', this)">😡</button>
-        </div>
+            <section class="filters-section">
+                <div class="filters">
+                    <button class="filter-btn active" onclick="setFilter('all', this)">Все</button>
+                    <button class="filter-btn" onclick="setFilter('😁', this)">😁</button>
+                    <button class="filter-btn" onclick="setFilter('😊', this)">😊</button>
+                    <button class="filter-btn" onclick="setFilter('😐', this)">😐</button>
+                    <button class="filter-btn" onclick="setFilter('😢', this)">😢</button>
+                    <button class="filter-btn" onclick="setFilter('😡', this)">😡</button>
+                </div>
+            </section>
 
-        <div class="date-header" id="list-date">Все записи</div>
-        <div id="notes-container"></div>
+            <div class="date-header" id="list-date">Все записи</div>
+            <section id="notes-container" class="notes-list">
+                <!-- Записи добавляются JS -->
+            </section>
 
-        <button class="fab" onclick="openNewNote()">+</button>
-    </div>
+            <button class="fab" onclick="openNewNote()">+</button>
+        </main>
 
-    <!-- ЭКРАН 2: ПРОСМОТР -->
-    <div id="screen-view" class="screen">
-        <div class="detail-header">
-            <button class="back-btn" onclick="showScreen('screen-list')">← Назад</button>
-        </div>
-        <div class="detail-date" id="view-date"></div>
-        <div class="detail-emoji" id="view-emoji"></div>
-        <h2 class="detail-title" id="view-title"></h2>
-        <div class="tags-container" id="view-tags" style="margin-bottom: 15px;"></div>
-        <div class="photo-preview" id="view-photo"></div>
-        <p class="detail-text" id="view-text"></p>
-        
-        <div class="detail-actions">
-            <button class="btn-primary" style="flex: 1;" onclick="editNote()">Редактировать</button>
-            <button class="btn-danger" style="flex: 1;" onclick="deleteNote()">Удалить</button>
-        </div>
-    </div>
-
-    <!-- ЭКРАН 3: РЕДАКТИРОВАНИЕ -->
-    <div id="screen-new" class="screen">
-        <div class="header">
-            <h1 id="form-title">Новая запись</h1>
-            <button class="close-btn" onclick="showScreen('screen-list')">✕</button>
-        </div>
-        
-        <label>Заголовок</label>
-        <input type="text" id="input-title" placeholder="О чём запись?">
-        
-        <label>Настроение</label>
-        <div class="emoji-row">
-            <button class="emoji-btn selected" onclick="selectEmoji(this)">😁</button>
-            <button class="emoji-btn" onclick="selectEmoji(this)">😊</button>
-            <button class="emoji-btn" onclick="selectEmoji(this)">😐</button>
-            <button class="emoji-btn" onclick="selectEmoji(this)">😢</button>
-            <button class="emoji-btn" onclick="selectEmoji(this)">😡</button>
-        </div>
-
-        <label>Текст записи</label>
-        <textarea id="input-text" placeholder="Что произошло сегодня?"></textarea>
-
-        <label>Фото</label>
-        <div class="photo-upload" onclick="document.getElementById('file-input').click()">+ Добавить фото</div>
-        <input type="file" id="file-input" accept="image/*" style="display: none;" onchange="previewImage(event)">
-        <div class="photo-preview" id="form-photo"></div>
-
-        <label>Теги</label>
-        <div class="tags-container" id="form-tags-container"></div>
-
-        <button class="btn-primary" style="margin-top: 30px;" onclick="saveNote()">Сохранить</button>
-    </div>
-
-    <!-- ЭКРАН 4: КАЛЕНДАРЬ -->
-    <div id="screen-calendar" class="screen">
-        <div class="header">
-            <div class="header-left">
-                <button class="back-btn" onclick="switchTab('screen-list', document.querySelectorAll('.nav-item')[0])">←</button>
-                <h1>Календарь</h1>
+        <!-- ЭКРАН 2: ПРОСМОТР -->
+        <section id="screen-view" class="screen">
+            <header class="detail-header">
+                <button class="back-btn" onclick="showScreen('screen-list')">← Назад</button>
+            </header>
+            <div class="detail-content">
+                <div class="detail-date" id="view-date"></div>
+                <div class="detail-emoji" id="view-emoji"></div>
+                <h2 class="detail-title" id="view-title"></h2>
+                <div class="tags-container" id="view-tags"></div>
+                <div class="photo-preview" id="view-photo"></div>
+                <p class="detail-text" id="view-text"></p>
             </div>
-        </div>
-        
-        <div class="calendar-header">
-            <button onclick="changeMonth(-1)">‹</button>
-            <h2 id="calendar-month-year" style="font-size: 18px;">Сентябрь 2025</h2>
-            <button onclick="changeMonth(1)">›</button>
-        </div>
-
-        <div class="calendar-grid" id="calendar-grid">
-            <!-- Сетка генерируется в JS -->
-        </div>
-    </div>
-
-    <!-- ЭКРАН 5: ПОИСК -->
-    <div id="screen-search" class="screen">
-        <div class="header">
-            <div class="header-left">
-                <button class="back-btn" onclick="switchTab('screen-list', document.querySelectorAll('.nav-item')[0])">←</button>
-                <h1>Поиск</h1>
+            
+            <div class="detail-actions">
+                <button class="btn-primary" onclick="editNote()">Редактировать</button>
+                <button class="btn-danger" onclick="deleteNote()">Удалить</button>
             </div>
-        </div>
-        <div class="search-bar">
-            <span>🔍</span>
-            <input type="text" placeholder="Глобальный поиск по тегам..." style="border:none; outline:none; width:100%;">
-        </div>
-        <div style="text-align: center; color: #888; margin-top: 40px;">
-            <p>Введите запрос, чтобы найти записи.</p>
-        </div>
-    </div>
+        </section>
 
-    <!-- ЭКРАН 6: ПРОФИЛЬ -->
-    <div id="screen-profile" class="screen">
-        <div class="header">
-            <div class="header-left">
-                <button class="back-btn" onclick="switchTab('screen-list', document.querySelectorAll('.nav-item')[0])">←</button>
-                <h1>Профиль</h1>
+        <!-- ЭКРАН 3: РЕДАКТИРОВАНИЕ -->
+        <section id="screen-new" class="screen">
+            <header class="app-header">
+                <h1 id="form-title">Новая запись</h1>
+                <button class="close-btn" onclick="showScreen('screen-list')">✕</button>
+            </header>
+            
+            <div class="form-group">
+                <label>Заголовок</label>
+                <input type="text" id="input-title" placeholder="О чём запись?">
             </div>
-        </div>
-        <div style="text-align: center; margin-top: 20px;">
-            <div style="width: 80px; height: 80px; background: #F0EEFF; color: #6C5CE7; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 30px; font-weight: bold; margin: 0 auto 15px;">A</div>
-            <h2>Пользователь</h2>
-            <p style="color: #888; font-size: 14px; margin-top: 5px;">user@mail.com</p>
-        </div>
-        <div style="margin-top: 30px; background: white; border-radius: 12px; border: 1px solid #EAEAEA; padding: 15px;">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid #F0F0F0; padding-bottom: 10px;">
-                <span>Всего записей</span>
-                <b id="profile-count">0</b>
+            
+            <div class="form-group">
+                <label>Настроение</label>
+                <div class="emoji-row">
+                    <button class="emoji-btn selected" onclick="selectEmoji(this)">😁</button>
+                    <button class="emoji-btn" onclick="selectEmoji(this)">😊</button>
+                    <button class="emoji-btn" onclick="selectEmoji(this)">😐</button>
+                    <button class="emoji-btn" onclick="selectEmoji(this)">😢</button>
+                    <button class="emoji-btn" onclick="selectEmoji(this)">😡</button>
+                </div>
             </div>
-            <div style="display: flex; justify-content: space-between;">
-                <span>Дата регистрации</span>
-                <b>24.09.2025</b>
+
+            <div class="form-group">
+                <label>Текст записи</label>
+                <textarea id="input-text" placeholder="Что произошло сегодня?"></textarea>
             </div>
-        </div>
-        <button class="btn-outline" style="margin-top: 30px; color: #FF4757;" onclick="showScreen('screen-auth')">Выйти из аккаунта</button>
+
+            <div class="form-group">
+                <label>Фото</label>
+                <div class="photo-upload" onclick="document.getElementById('file-input').click()">+ Добавить фото</div>
+                <input type="file" id="file-input" accept="image/*" style="display: none;" onchange="previewImage(event)">
+                <div class="photo-preview" id="form-photo"></div>
+            </div>
+
+            <div class="form-group">
+                <label>Теги</label>
+                <div class="tags-container" id="form-tags-container"></div>
+            </div>
+
+            <button class="btn-primary" onclick="saveNote()">Сохранить</button>
+        </section>
+
+        <!-- ЭКРАН 4: КАЛЕНДАРЬ -->
+        <section id="screen-calendar" class="screen">
+            <header class="app-header">
+                <div class="header-left">
+                    <button class="back-btn" onclick="switchTab('screen-list', document.querySelectorAll('.nav-item')[0])">←</button>
+                    <h1>Календарь</h1>
+                </div>
+            </header>
+            
+            <div class="calendar-header">
+                <button onclick="changeMonth(-1)">‹</button>
+                <h2 id="calendar-month-year">Сентябрь 2025</h2>
+                <button onclick="changeMonth(1)">›</button>
+            </div>
+
+            <div class="calendar-grid" id="calendar-grid"></div>
+        </section>
+
+        <!-- ЭКРАН 5: ПОИСК -->
+        <section id="screen-search" class="screen">
+            <header class="app-header">
+                <div class="header-left">
+                    <button class="back-btn" onclick="switchTab('screen-list', document.querySelectorAll('.nav-item')[0])">←</button>
+                    <h1>Поиск</h1>
+                </div>
+            </header>
+            <div class="search-bar">
+                <span>🔍</span>
+                <input type="text" placeholder="Глобальный поиск..." style="border:none; outline:none; width:100%;">
+            </div>
+            <div class="empty-state"><p>Введите запрос, чтобы найти записи.</p></div>
+        </section>
+
+        <!-- ЭКРАН 6: ПРОФИЛЬ -->
+        <section id="screen-profile" class="screen">
+            <header class="app-header">
+                <div class="header-left">
+                    <button class="back-btn" onclick="switchTab('screen-list', document.querySelectorAll('.nav-item')[0])">←</button>
+                    <h1>Профиль</h1>
+                </div>
+            </header>
+            <div class="profile-info">
+                <div class="profile-avatar">A</div>
+                <h2>Пользователь</h2>
+                <p class="profile-email">user@mail.com</p>
+            </div>
+            <div class="profile-stats">
+                <div class="stat-row">
+                    <span>Всего записей</span>
+                    <b id="profile-count">0</b>
+                </div>
+                <div class="stat-row">
+                    <span>Дата регистрации</span>
+                    <b>24.09.2025</b>
+                </div>
+            </div>
+            <button class="btn-outline logout-btn" onclick="showScreen('screen-auth')">Выйти из аккаунта</button>
+        </section>
+
+        <!-- ЭКРАН 7: АВТОРИЗАЦИЯ -->
+        <section id="screen-auth" class="screen auth-screen">
+            <header class="app-header" style="position: absolute; top: 0; width: 100%;">
+                <button class="back-btn" onclick="showScreen('screen-list')">← Назад</button>
+            </header>
+            <div class="auth-logo">📖</div>
+            <h1 class="auth-title">Личный дневник</h1>
+            <p class="auth-subtitle">Записывай мысли каждый день</p>
+            
+            <div class="auth-form">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" placeholder="you@mail.com">
+                </div>
+                <div class="form-group">
+                    <label>Пароль</label>
+                    <input type="password" placeholder="••••••••">
+                </div>
+                <a href="#" class="forgot-pass">Забыли пароль?</a>
+                
+                <button class="btn-primary" style="margin-top: 2rem;" onclick="switchTab('screen-list', document.querySelectorAll('.nav-item')[0])">Войти</button>
+                
+                <div class="divider">или</div>
+                <button class="btn-outline">Войти через Google</button>
+                <a href="#" class="register-link">Нет аккаунта? <span>Зарегистрироваться</span></a>
+            </div>
+        </section>
+
+        <!-- НИЖНЕЕ МЕНЮ -->
+        <nav class="bottom-nav" id="main-nav">
+            <div class="nav-item active" onclick="switchTab('screen-list', this)">
+                <svg viewBox="0 0 24 24"><path d="M4 6h16v12H4z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 10h16"/></svg>
+                Лента
+            </div>
+            <div class="nav-item" onclick="switchTab('screen-calendar', this)">
+                <svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10z"/></svg>
+                Календарь
+            </div>
+            <div class="nav-item" onclick="switchTab('screen-search', this)">
+                <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                Поиск
+            </div>
+            <div class="nav-item" onclick="switchTab('screen-profile', this)">
+                <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                Профиль
+            </div>
+        </nav>
     </div>
 
-    <!-- ЭКРАН 7: АВТОРИЗАЦИЯ -->
-    <div id="screen-auth" class="screen auth-screen">
-        <div class="header" style="width: 100%; position: absolute; top: 0; left: 0; padding: 20px;">
-            <button class="back-btn" onclick="showScreen('screen-list')">← Назад</button>
-        </div>
-        <div class="auth-logo">📖</div>
-        <h1 class="auth-title">Личный дневник</h1>
-        <p class="auth-subtitle">Записывай мысли каждый день</p>
-        
-        <div class="auth-form">
-            <label>Email</label>
-            <input type="email" placeholder="you@mail.com">
-            
-            <label>Пароль</label>
-            <input type="password" placeholder="••••••••">
-            <a href="#" class="forgot-pass">Забыли пароль?</a>
-            
-            <button class="btn-primary" style="margin-top: 20px;" onclick="switchTab('screen-list', document.querySelectorAll('.nav-item')[0])">Войти</button>
-            
-            <div class="divider">или</div>
-            <button class="btn-outline">Войти через Google</button>
-            <a href="#" class="register-link">Нет аккаунта? <span>Зарегистрироваться</span></a>
-        </div>
-    </div>
-
-    <!-- НИЖНЕЕ МЕНЮ -->
-    <div class="bottom-nav" id="main-nav">
-        <div class="nav-item active" onclick="switchTab('screen-list', this)">
-            <svg viewBox="0 0 24 24"><path d="M4 6h16v12H4z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 10h16"/></svg>
-            Лента
-        </div>
-        <div class="nav-item" onclick="switchTab('screen-calendar', this)">
-            <svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10z"/></svg>
-            Календарь
-        </div>
-        <div class="nav-item" onclick="switchTab('screen-search', this)">
-            <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-            Поиск
-        </div>
-        <div class="nav-item" onclick="switchTab('screen-profile', this)">
-            <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-            Профиль
-        </div>
-    </div>
-</div>
-
-<script>
-    // Начальные данные (добавил даты в ISO формате для календаря)
-    let notes = [
-        {
-            id: 1,
-            date: "Сегодня, 14:30",
-            dateISO: new Date().toISOString().split('T')[0],
-            title: "Хороший день",
-            emoji: "😁",
-            text: "Сегодня закончил проект, погулял в парке и встретил старого друга...",
-            tags: ["работа", "друзья"],
-            fullText: "Сегодня был отличный день! Закончил большой проект на работе, потом погулял в парке и случайно встретил старого друга. Посидели в кофейне, вспомнили старое.",
-            image: null
-        },
-        {
-            id: 2,
-            date: "Вчера, 09:15",
-            dateISO: new Date(Date.now() - 86400000).toISOString().split('T')[0],
-            title: "Утро понедельника",
-            emoji: "😊",
-            text: "Не выспался, но кофе спас ситуацию. Планов на день много...",
-            tags: ["работа"],
-            fullText: "Не выспался, но кофе спас ситуацию. Планов на день много, надеюсь всё успеть.",
-            image: null
-        }
-    ];
-
-    let currentNoteId = null;
-    let selectedEmoji = "😁";
-    let currentFilter = "all";
-    let dateFilter = null; // Фильтр по клику на календарь
-    let formTags = [];
-    let formImage = null;
-    
-    // Переменные календаря
-    let currentDate = new Date();
-
-    // --- НАВИГАЦИЯ ---
-    function showScreen(screenId) {
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById(screenId).classList.add('active');
-        
-        const nav = document.getElementById('main-nav');
-        const fab = document.querySelector('.fab');
-        
-        if(['screen-list', 'screen-calendar', 'screen-search', 'screen-profile'].includes(screenId)) {
-            nav.style.display = 'flex';
-            if(fab) fab.style.display = (screenId === 'screen-list') ? 'flex' : 'none';
-        } else {
-            nav.style.display = 'none';
-            if(fab) fab.style.display = 'none';
-        }
-
-        if(screenId === 'screen-profile') {
-            document.getElementById('profile-count').innerText = notes.length;
-        }
-        if(screenId === 'screen-calendar') {
-            renderCalendar();
-        }
-    }
-
-    function switchTab(screenId, element) {
-        document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-        if(element) element.classList.add('active');
-        showScreen(screenId);
-    }
-
-    // --- ФИЛЬТРЫ И ПОИСК ---
-    function setFilter(emoji, btn) {
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentFilter = emoji;
-        dateFilter = null; // Сбрасываем фильтр календаря
-        renderNotes();
-    }
-
-    function renderNotes() {
-        const container = document.getElementById('notes-container');
-        const searchQuery = document.getElementById('search-input').value.toLowerCase();
-        container.innerHTML = '';
-        
-        const filtered = notes.filter(n => {
-            const matchEmoji = currentFilter === 'all' || n.emoji === currentFilter;
-            const matchSearch = n.title.toLowerCase().includes(searchQuery) || n.fullText.toLowerCase().includes(searchQuery) || n.tags.some(t => t.toLowerCase().includes(searchQuery));
-            const matchDate = !dateFilter || n.dateISO === dateFilter;
-            return matchEmoji && matchSearch && matchDate;
-        });
-
-        document.getElementById('list-date').innerText = dateFilter ? `Записи за ${dateFilter}` : "Все записи";
-        if(filtered.length === 0) document.getElementById('list-date').innerText = "Записей не найдено";
-
-        filtered.forEach(note => {
-            const card = document.createElement('div');
-            card.className = 'note-card';
-            card.onclick = () => openNote(note.id);
-            
-            card.innerHTML = `
-                <div class="note-time">${note.date}</div>
-                <div class="note-title">${note.title}</div>
-                <div class="note-preview-text">${note.text}</div>
-                <div class="tags-container">${note.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
-                <div class="note-emoji">${note.emoji}</div>
-            `;
-            container.appendChild(card);
-        });
-    }
-
-    // --- КАЛЕНДАРЬ ---
-    function renderCalendar() {
-        const year = currentDate.getFullYear();
-        const month = currentDate.getMonth();
-        
-        const monthNames = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
-        document.getElementById('calendar-month-year').innerText = `${monthNames[month]} ${year}`;
-        
-        const grid = document.getElementById('calendar-grid');
-        grid.innerHTML = '';
-        
-        const days = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
-        days.forEach(d => {
-            const el = document.createElement('div');
-            el.className = 'calendar-day-name';
-            el.innerText = d;
-            grid.appendChild(el);
-        });
-
-        let firstDay = new Date(year, month, 1).getDay();
-        if (firstDay === 0) firstDay = 7; // Воскресенье - 7-й день
-        const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-        // Пустые ячейки
-        for (let i = 1; i < firstDay; i++) {
-            const el = document.createElement('div');
-            el.className = 'calendar-day empty';
-            grid.appendChild(el);
-        }
-
-        // Дни
-        for (let i = 1; i <= daysInMonth; i++) {
-            const el = document.createElement('div');
-            el.className = 'calendar-day';
-            el.innerText = i;
-            
-            // Форматируем дату как YYYY-MM-DD
-            const dStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
-            
-            // Проверяем, есть ли записи в этот день
-            const hasNote = notes.some(n => n.dateISO === dStr);
-            if (hasNote) {
-                el.classList.add('has-note');
-                el.onclick = () => {
-                    dateFilter = dStr;
-                    currentFilter = "all";
-                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                    document.querySelector('.filter-btn').classList.add('active');
-                    renderNotes();
-                    switchTab('screen-list', document.querySelectorAll('.nav-item')[0]);
-                };
-            }
-            grid.appendChild(el);
-        }
-    }
-
-    function changeMonth(offset) {
-        currentDate.setMonth(currentDate.getMonth() + offset);
-        renderCalendar();
-    }
-
-    // --- СОЗДАНИЕ И РЕДАКТИРОВАНИЕ ---
-    function openNewNote() {
-        currentNoteId = null;
-        formTags = [];
-        formImage = null;
-        selectedEmoji = "😁";
-        
-        document.getElementById('form-title').innerText = "Новая запись";
-        document.getElementById('input-title').value = '';
-        document.getElementById('input-text').value = '';
-        document.getElementById('form-photo').style.display = 'none';
-        document.getElementById('form-photo').innerHTML = '';
-        
-        document.querySelectorAll('.emoji-btn').forEach((b, i) => {
-            if(i === 0) b.classList.add('selected');
-            else b.classList.remove('selected');
-        });
-        
-        renderFormTags();
-        showScreen('screen-new');
-    }
-
-    function selectEmoji(btn) {
-        document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
-        btn.classList.add('selected');
-        selectedEmoji = btn.innerText;
-    }
-
-    function previewImage(event) {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                formImage = e.target.result;
-                const preview = document.getElementById('form-photo');
-                preview.style.display = 'flex';
-                preview.innerHTML = `<img src="${formImage}" alt="Фото">`;
-            }
-            reader.readAsDataURL(file);
-        }
-    }
-
-    function addTag() {
-        const tag = prompt("Введите тег (без #):");
-        if(tag && tag.trim() !== '') {
-            formTags.push(tag.trim());
-            renderFormTags();
-        }
-    }
-
-    function removeTag(index) {
-        formTags.splice(index, 1);
-        renderFormTags();
-    }
-
-    function renderFormTags() {
-        const container = document.getElementById('form-tags-container');
-        container.innerHTML = '';
-        formTags.forEach((tag, i) => {
-            const span = document.createElement('span');
-            span.className = 'tag';
-            span.innerHTML = `# ${tag} <button onclick="removeTag(${i})">×</button>`;
-            container.appendChild(span);
-        });
-        
-        const btn = document.createElement('button');
-        btn.className = 'add-tag-btn';
-        btn.innerText = '+';
-        btn.onclick = addTag;
-        container.appendChild(btn);
-    }
-
-    function saveNote() {
-        const title = document.getElementById('input-title').value || 'Без названия';
-        const text = document.getElementById('input-text').value || 'Пустая запись...';
-        
-        const todayISO = new Date().toISOString().split('T')[0];
-        
-        if(currentNoteId) {
-            const note = notes.find(n => n.id === currentNoteId);
-            note.title = title;
-            note.fullText = text;
-            note.text = text.substring(0, 50) + (text.length > 50 ? '...' : '');
-            note.emoji = selectedEmoji;
-            note.tags = [...formTags];
-            note.image = formImage;
-        } else {
-            const now = new Date();
-            const timeStr = `Сегодня, ${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
-            
-            notes.unshift({
-                id: Date.now(),
-                date: timeStr,
-                dateISO: todayISO,
-                title: title,
-                emoji: selectedEmoji,
-                text: text.substring(0, 50) + (text.length > 50 ? '...' : ''),
-                tags: [...formTags],
-                fullText: text,
-                image: formImage
-            });
-        }
-        
-        dateFilter = null;
-        renderNotes();
-        switchTab('screen-list', document.querySelectorAll('.nav-item')[0]);
-    }
-
-    // --- ПРОСМОТР ---
-    function openNote(id) {
-        const note = notes.find(n => n.id === id);
-        if(!note) return;
-        currentNoteId = id;
-        
-        document.getElementById('view-date').innerText = note.date;
-        document.getElementById('view-emoji').innerText = note.emoji;
-        document.getElementById('view-title').innerText = note.title;
-        document.getElementById('view-text').innerText = note.fullText;
-        document.getElementById('view-tags').innerHTML = note.tags.map(t => `<span class="tag">${t}</span>`).join('');
-        
-        const photoDiv = document.getElementById('view-photo');
-        if(note.image) {
-            photoDiv.style.display = 'flex';
-            photoDiv.innerHTML = `<img src="${note.image}" alt="Фото">`;
-        } else {
-            photoDiv.style.display = 'none';
-            photoDiv.innerHTML = '';
-        }
-        
-        showScreen('screen-view');
-    }
-
-    function deleteNote() {
-        if(confirm("Вы уверены, что хотите удалить запись?")) {
-            notes = notes.filter(n => n.id !== currentNoteId);
-            renderNotes();
-            showScreen('screen-list');
-        }
-    }
-
-    function editNote() {
-        const note = notes.find(n => n.id === currentNoteId);
-        if(!note) return;
-        
-        document.getElementById('form-title').innerText = "Редактирование";
-        document.getElementById('input-title').value = note.title;
-        document.getElementById('input-text').value = note.fullText;
-        
-        document.querySelectorAll('.emoji-btn').forEach(btn => {
-            if(btn.innerText === note.emoji) btn.classList.add('selected');
-            else btn.classList.remove('selected');
-        });
-        selectedEmoji = note.emoji;
-        
-        formTags = [...note.tags];
-        renderFormTags();
-        
-        formImage = note.image;
-        const preview = document.getElementById('form-photo');
-        if(formImage) {
-            preview.style.display = 'flex';
-            preview.innerHTML = `<img src="${formImage}" alt="Фото">`;
-        } else {
-            preview.style.display = 'none';
-            preview.innerHTML = '';
-        }
-
-        showScreen('screen-new');
-    }
-
-    // Инициализация
-    renderNotes();
-</script>
+    <!-- Подключение JS -->
+    <script src="js/app.js"></script>
 </body>
 </html>
